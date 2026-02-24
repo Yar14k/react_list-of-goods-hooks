@@ -16,7 +16,7 @@ export const goodsFromServer = [
   'Garlic',
 ];
 
-enum SortField {
+enum SortType {
   ALPHABETICALLY = 'alphabetically',
   BY_LENGTH = 'bylength',
   NONE = '',
@@ -24,16 +24,16 @@ enum SortField {
 
 function getPreparedGoods(
   goods: string[],
-  { sortField, reverse }: { sortField: SortField; reverse: boolean },
+  { sortField, reverse }: { sortField: SortType; reverse: boolean },
 ) {
   const preparedGoods: string[] = [...goods];
 
   if (sortField) {
     preparedGoods.sort((good1: string, good2: string) => {
       switch (sortField) {
-        case SortField.ALPHABETICALLY:
+        case SortType.ALPHABETICALLY:
           return good1.localeCompare(good2);
-        case SortField.BY_LENGTH:
+        case SortType.BY_LENGTH:
           return good1.length - good2.length;
         default:
           return 0;
@@ -49,7 +49,7 @@ function getPreparedGoods(
 }
 
 export const App = () => {
-  const [sortField, setSortField] = useState<SortField>(SortField.NONE);
+  const [sortField, setSortField] = useState<SortType>(SortType.NONE);
   const [isReversed, setIsReversed] = useState(false);
 
   const readyGoods = getPreparedGoods(goodsFromServer, {
@@ -57,16 +57,16 @@ export const App = () => {
     reverse: isReversed,
   });
 
-  const handleSortAlphabetically = () => setSortField(SortField.ALPHABETICALLY);
+  const handleSortAlphabetically = () => setSortField(SortType.ALPHABETICALLY);
 
-  const handleSortByLength = () => setSortField(SortField.BY_LENGTH);
+  const handleSortByLength = () => setSortField(SortType.BY_LENGTH);
   const handleReverse = () => setIsReversed(!isReversed);
   const handleReset = () => {
-    setSortField(SortField.NONE);
+    setSortField(SortType.NONE);
     setIsReversed(false);
   };
 
-  const isResetNeeded = sortField !== SortField.NONE || isReversed;
+  const isResetNeeded = sortField !== SortType.NONE || isReversed;
 
   return (
     <div className="section content">
@@ -74,7 +74,7 @@ export const App = () => {
         <button
           type="button"
           className={cn('button', 'is-info', {
-            'is-light': sortField !== SortField.ALPHABETICALLY,
+            'is-light': sortField !== SortType.ALPHABETICALLY,
           })}
           onClick={handleSortAlphabetically}
         >
@@ -84,7 +84,7 @@ export const App = () => {
         <button
           type="button"
           className={cn('button', 'is-success', {
-            'is-light': sortField !== SortField.BY_LENGTH,
+            'is-light': sortField !== SortType.BY_LENGTH,
           })}
           onClick={handleSortByLength}
         >
