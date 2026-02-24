@@ -1,4 +1,3 @@
-
 import 'bulma/css/bulma.css';
 import './App.scss';
 import cn from 'classnames';
@@ -20,11 +19,14 @@ export const goodsFromServer = [
 enum SortField {
   ALPHABETICALLY = 'alphabetically',
   BY_LENGTH = 'bylength',
+  NONE = '',
 }
 
-function getPreparedGoods(goods: string[], { sortField: SortField, reverse: boolean }) {
-
-  const preparedGoods = [...goods];
+function getPreparedGoods(
+  goods: string[],
+  { sortField, reverse }: { sortField: SortField; reverse: boolean },
+) {
+  const preparedGoods: string[] = [...goods];
 
   if (sortField) {
     preparedGoods.sort((good1: string, good2: string) => {
@@ -45,27 +47,26 @@ function getPreparedGoods(goods: string[], { sortField: SortField, reverse: bool
 
   return preparedGoods;
 }
-export const App = () => {
-  
 
-  const [sortField, setSortField] = useState('');
+export const App = () => {
+  const [sortField, setSortField] = useState<SortField>(SortField.NONE);
   const [isReversed, setIsReversed] = useState(false);
+
   const readyGoods = getPreparedGoods(goodsFromServer, {
     sortField,
     reverse: isReversed,
   });
 
-  const handleSortAlphabetically = () =>
-    setSortField(SORT_FIELD_ALPHABETICALLY);
+  const handleSortAlphabetically = () => setSortField(SortField.ALPHABETICALLY);
 
-  const handleSortByLength = () => setSortField(SORT_FIELD_BY_LENGTH);
+  const handleSortByLength = () => setSortField(SortField.BY_LENGTH);
   const handleReverse = () => setIsReversed(!isReversed);
   const handleReset = () => {
-    setSortField('');
+    setSortField(SortField.NONE);
     setIsReversed(false);
   };
 
-  const isResetNeeded = sortField !== '' || isReversed;
+  const isResetNeeded = sortField !== SortField.NONE || isReversed;
 
   return (
     <div className="section content">
@@ -73,7 +74,7 @@ export const App = () => {
         <button
           type="button"
           className={cn('button', 'is-info', {
-            'is-light': sortField !== SORT_FIELD_ALPHABETICALLY,
+            'is-light': sortField !== SortField.ALPHABETICALLY,
           })}
           onClick={handleSortAlphabetically}
         >
@@ -83,7 +84,7 @@ export const App = () => {
         <button
           type="button"
           className={cn('button', 'is-success', {
-            'is-light': sortField !== SORT_FIELD_BY_LENGTH,
+            'is-light': sortField !== SortField.BY_LENGTH,
           })}
           onClick={handleSortByLength}
         >
